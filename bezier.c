@@ -56,26 +56,41 @@ Table_triplet computeAllPoints(Quadruplet* quad, int nbOfQuad, int pt_number) {
     return tab;
 }
 
-Table_triplet changeParametersAndCompute(Quadruplet* quad, int nbOfQuad, 
-                                        int pt_number, double uMin, double uMax) {
+Table_quadruplet changeParameters(Quadruplet* old_quads, int nbOfQuad, double uMin, 
+        double uMax) {
 
-    changeControlPointsKeepFirstPart(quad, nbOfQuad, uMax);
-    changeControlPointsKeepSecondPart(quad, nbOfQuad, uMin/uMax);
-    return computeAllPoints(quad, nbOfQuad, pt_number);
+    Table_quadruplet tab;
+    tab.nb = nbOfQuad;
+
+    Quadruplet * temp;
+    ALLOUER(temp, nbOfQuad);
+
+    changeControlPointsKeepFirstPart(old_quads, temp, nbOfQuad, uMax);
+    changeControlPointsKeepSecondPart(temp, temp, nbOfQuad, uMin/uMax);
+
+    tab.table = temp;
+    
+    return tab;
 }
 
-void changeControlPointsKeepSecondPart(Quadruplet * quad, int nbOfQuad, double u) {
+void changeControlPointsKeepFirstPart(Quadruplet * old_quads, Quadruplet * new_quads,
+        int nbOfQuad, double u) {
 
     int i, j;
     Quadruplet * temp;
     ALLOUER(temp, nbOfQuad);
 
     for(i = 0; i < nbOfQuad; i++) {
-        temp[i].x = quad[i].x * quad[i].h;
-        temp[i].y = quad[i].y * quad[i].h;
-        temp[i].z = quad[i].z * quad[i].h;
-        temp[i].h = quad[i].h ;
+        temp[i].x = old_quads[i].x * old_quads[i].h;
+        temp[i].y = old_quads[i].y * old_quads[i].h;
+        temp[i].z = old_quads[i].z * old_quads[i].h;
+        temp[i].h = old_quads[i].h;
     }
+
+    new_quads[0].x = temp[0].x / temp[0].h;
+    new_quads[0].y = temp[0].y / temp[0].h;
+    new_quads[0].z = temp[0].z / temp[0].h;
+    new_quads[0].h = temp[0].h ;
 
     for(i = 1; i < nbOfQuad; i++) {
         for(j = 0; j < nbOfQuad - i; j++) {
@@ -84,29 +99,28 @@ void changeControlPointsKeepSecondPart(Quadruplet * quad, int nbOfQuad, double u
             temp[j].z = (u * temp[j+1].z) + ((1-u) * temp[j].z);
             temp[j].h = (u * temp[j+1].h) + ((1-u) * temp[j].h);
         }
-    }
 
-    for(i = 0; i < nbOfQuad; i++) {
-        quad[i].x = temp[i].x / temp[i].h;
-        quad[i].y = temp[i].y / temp[i].h;
-        quad[i].z = temp[i].z / temp[i].h;
-        quad[i].h = temp[i].h ;
+        new_quads[i].x = temp[0].x / temp[0].h;
+        new_quads[i].y = temp[0].y / temp[0].h;
+        new_quads[i].z = temp[0].z / temp[0].h;
+        new_quads[i].h = temp[0].h ;
     }
 
     free(temp);
 }
 
-void changeControlPointsKeepFirstPart(Quadruplet * quad, int nbOfQuad, double u) {
+void changeControlPointsKeepSecondPart(Quadruplet * old_quads, Quadruplet * new_quads,
+        int nbOfQuad, double u) {
 
     int i, j;
     Quadruplet * temp;
     ALLOUER(temp, nbOfQuad);
 
     for(i = 0; i < nbOfQuad; i++) {
-        temp[i].x = quad[i].x * quad[i].h;
-        temp[i].y = quad[i].y * quad[i].h;
-        temp[i].z = quad[i].z * quad[i].h;
-        temp[i].h = quad[i].h;
+        temp[i].x = old_quads[i].x * old_quads[i].h;
+        temp[i].y = old_quads[i].y * old_quads[i].h;
+        temp[i].z = old_quads[i].z * old_quads[i].h;
+        temp[i].h = old_quads[i].h ;
     }
 
     for(i = 1; i < nbOfQuad; i++) {
@@ -116,11 +130,13 @@ void changeControlPointsKeepFirstPart(Quadruplet * quad, int nbOfQuad, double u)
             temp[j].z = (u * temp[j+1].z) + ((1-u) * temp[j].z);
             temp[j].h = (u * temp[j+1].h) + ((1-u) * temp[j].h);
         }
+    }
 
-        quad[i].x = temp[0].x / temp[0].h;
-        quad[i].y = temp[0].y / temp[0].h;
-        quad[i].z = temp[0].z / temp[0].h;
-        quad[i].h = temp[0].h ;
+    for(i = 0; i < nbOfQuad; i++) {
+        new_quads[i].x = temp[i].x / temp[i].h;
+        new_quads[i].y = temp[i].y / temp[i].h;
+        new_quads[i].z = temp[i].z / temp[i].h;
+        new_quads[i].h = temp[i].h ;
     }
 
     free(temp);
