@@ -56,9 +56,9 @@ static void changement(struct bezier * b)
 			&& (b->uMin < b->uMax) ) {
 
 		free(b->curvePoints.table);
-		b->curvePoints = changeParameters(b->controlPoints.table,
-											b->controlPoints.nb, b->pt_number,
-											b->uMin, b->uMax);
+		b->curvePoints = changeParametersAndCompute(b->controlPoints.table,
+													b->controlPoints.nb, b->pt_number,
+													b->uMin, b->uMax);
 	}
 }
 

@@ -56,19 +56,16 @@ Table_triplet computeAllPoints(Quadruplet* quad, int nbOfQuad, int pt_number) {
     return tab;
 }
 
-Table_triplet changeParameters(Quadruplet* quad, int nbOfQuad, int pt_number,
-                                double uMin, double uMax) {
+Table_triplet changeParametersAndCompute(Quadruplet* quad, int nbOfQuad, 
+                                        int pt_number, double uMin, double uMax) {
 
-    /*
-     * Modifications sur quad
-     */
     changeControlPointsKeepFirstPart(quad, nbOfQuad, uMax);
     changeControlPointsKeepSecondPart(quad, nbOfQuad, uMin/uMax);
     return computeAllPoints(quad, nbOfQuad, pt_number);
 }
 
 void changeControlPointsKeepSecondPart(Quadruplet * quad, int nbOfQuad, double u) {
-    
+
     int i, j;
     Quadruplet * temp;
     ALLOUER(temp, nbOfQuad);
