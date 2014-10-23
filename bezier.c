@@ -62,7 +62,8 @@ Table_triplet changeParameters(Quadruplet* quad, int nbOfQuad, int pt_number,
     /*
      * Modifications sur quad
      */
-    changeControlPointsKeepSecondPart(quad, nbOfQuad, uMin);
+    changeControlPointsKeepFirstPart(quad, nbOfQuad, uMax);
+    changeControlPointsKeepSecondPart(quad, nbOfQuad, uMin/uMax);
     return computeAllPoints(quad, nbOfQuad, pt_number);
 }
 
@@ -77,7 +78,6 @@ void changeControlPointsKeepSecondPart(Quadruplet * quad, int nbOfQuad, double u
         temp[i].y = quad[i].y * quad[i].h;
         temp[i].z = quad[i].z * quad[i].h;
         temp[i].h = quad[i].h ;
-        printf("Entrée : %lf / %lf / %lf / %lf \n", temp[i].x, temp[i].y, temp[i].z, temp[i].h);
     }
 
     for(i = 1; i < nbOfQuad; i++) {
@@ -93,8 +93,7 @@ void changeControlPointsKeepSecondPart(Quadruplet * quad, int nbOfQuad, double u
         quad[i].x = temp[i].x / temp[i].h;
         quad[i].y = temp[i].y / temp[i].h;
         quad[i].z = temp[i].z / temp[i].h;
-        //quad[i].h = temp[i].h ;
-        printf("Sortie : %lf / %lf / %lf / %lf \n", temp[i].x, temp[i].y, temp[i].z, temp[i].h);
+        quad[i].h = temp[i].h ;
     }
 
     free(temp);
@@ -115,7 +114,17 @@ void changeControlPointsKeepFirstPart(Quadruplet * quad, int nbOfQuad, double u)
 
     for(i = 1; i < nbOfQuad; i++) {
         for(j = 0; j < nbOfQuad - i; j++) {
-
+            temp[j].x = (u * temp[j+1].x) + ((1-u) * temp[j].x);
+            temp[j].y = (u * temp[j+1].y) + ((1-u) * temp[j].y);
+            temp[j].z = (u * temp[j+1].z) + ((1-u) * temp[j].z);
+            temp[j].h = (u * temp[j+1].h) + ((1-u) * temp[j].h);
         }
+
+        quad[i].x = temp[0].x / temp[0].h;
+        quad[i].y = temp[0].y / temp[0].h;
+        quad[i].z = temp[0].z / temp[0].h;
+        quad[i].h = temp[0].h ;
     }
+
+    free(temp);
 }
