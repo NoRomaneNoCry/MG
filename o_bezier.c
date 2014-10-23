@@ -9,7 +9,10 @@ struct bezier {
 	Table_triplet curvePoints;
 	Table_quadruplet controlPoints;
 	int pt_number;
+	Booleen showControlPoints;
 
+	double uMin;
+	double uMax;
 };
 
 static void drawBezier(struct bezier * b)
@@ -25,12 +28,14 @@ static void drawBezier(struct bezier * b)
 	}
 	glEnd();
 
-	glBegin(GL_LINE_STRIP); // trace n-1 lignes pour n points
-	for(i = 0; i < b->controlPoints.nb; i++) {
-		glVertex3f(b->controlPoints.table[i].x, b->controlPoints.table[i].y,
-					b->controlPoints.table[i].z);
+	if(b->showControlPoints) {
+		glBegin(GL_LINE_STRIP); // trace n-1 lignes pour n points
+		for(i = 0; i < b->controlPoints.nb; i++) {
+			glVertex3f(b->controlPoints.table[i].x, b->controlPoints.table[i].y,
+						b->controlPoints.table[i].z);
+		}
+		glEnd();
 	}
-	glEnd();
 }
 
 static void changement(struct bezier * b)
@@ -46,12 +51,27 @@ static void changement(struct bezier * b)
 											b->controlPoints.nb, b->pt_number);
 
 	}
+	else if(((CHAMP_CHANGE(b, uMin) && (b->uMin >= 0) && (b->uMin <= 1))
+			 || (CHAMP_CHANGE(b, uMax) && (b->uMax >=0) && (b->uMax <= 1))) 
+			&& (b->uMin < b->uMax) ) {
+
+		free(b->curvePoints.table);
+		b->curvePoints = changeParameters(b->controlPoints.table,
+											b->controlPoints.nb, b->pt_number,
+											b->uMin, b->uMax);
+	}
 }
 
 CLASSE(CourbeBezier, struct bezier,
 
 	CHAMP(pt_number, LABEL("Nombre de points") L_entier 
-			Edite Sauve DEFAUT("10") )
+			Edite Sauve DEFAUT("20") )
+	CHAMP(showControlPoints, LABEL("Afficher points contrôle") L_booleen
+			Edite Sauve DEFAUT("1") )
+	CHAMP(uMin, LABEL("Borne min") L_flottant
+			Edite Sauve DEFAUT("0") )
+	CHAMP(uMax, LABEL("Borne max") L_flottant
+			Edite Sauve DEFAUT("1") )
 	CHAMP(controlPoints, LABEL("Points de contrôle") L_table_point P_table_quadruplet
 			Edite Extrait Obligatoire Sauve)
 	CHAMP(curvePoints, L_table_point P_table_triplet

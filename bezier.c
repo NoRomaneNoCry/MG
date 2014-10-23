@@ -14,9 +14,9 @@ Triplet computePoint(Quadruplet* quad,int nbOfQuad, double u) {
         ALLOUER(mat[i], nbOfQuad);
 
     for(i=0; i<nbOfQuad; i++) {
-        mat[0][i].x = quad[i].x;
-        mat[0][i].y = quad[i].y;
-        mat[0][i].z = quad[i].z;
+        mat[0][i].x = quad[i].x * quad[i].h;
+        mat[0][i].y = quad[i].y * quad[i].h;
+        mat[0][i].z = quad[i].z * quad[i].h;
         mat[0][i].h = quad[i].h;
     }
 
@@ -54,4 +54,68 @@ Table_triplet computeAllPoints(Quadruplet* quad, int nbOfQuad, int pt_number) {
     }
 
     return tab;
+}
+
+Table_triplet changeParameters(Quadruplet* quad, int nbOfQuad, int pt_number,
+                                double uMin, double uMax) {
+
+    /*
+     * Modifications sur quad
+     */
+    changeControlPointsKeepSecondPart(quad, nbOfQuad, uMin);
+    return computeAllPoints(quad, nbOfQuad, pt_number);
+}
+
+void changeControlPointsKeepSecondPart(Quadruplet * quad, int nbOfQuad, double u) {
+    
+    int i, j;
+    Quadruplet * temp;
+    ALLOUER(temp, nbOfQuad);
+
+    for(i = 0; i < nbOfQuad; i++) {
+        temp[i].x = quad[i].x * quad[i].h;
+        temp[i].y = quad[i].y * quad[i].h;
+        temp[i].z = quad[i].z * quad[i].h;
+        temp[i].h = quad[i].h ;
+        printf("Entrée : %lf / %lf / %lf / %lf \n", temp[i].x, temp[i].y, temp[i].z, temp[i].h);
+    }
+
+    for(i = 1; i < nbOfQuad; i++) {
+        for(j = 0; j < nbOfQuad - i; j++) {
+            temp[j].x = (u * temp[j+1].x) + ((1-u) * temp[j].x);
+            temp[j].y = (u * temp[j+1].y) + ((1-u) * temp[j].y);
+            temp[j].z = (u * temp[j+1].z) + ((1-u) * temp[j].z);
+            temp[j].h = (u * temp[j+1].h) + ((1-u) * temp[j].h);
+        }
+    }
+
+    for(i = 0; i < nbOfQuad; i++) {
+        quad[i].x = temp[i].x / temp[i].h;
+        quad[i].y = temp[i].y / temp[i].h;
+        quad[i].z = temp[i].z / temp[i].h;
+        //quad[i].h = temp[i].h ;
+        printf("Sortie : %lf / %lf / %lf / %lf \n", temp[i].x, temp[i].y, temp[i].z, temp[i].h);
+    }
+
+    free(temp);
+}
+
+void changeControlPointsKeepFirstPart(Quadruplet * quad, int nbOfQuad, double u) {
+
+    int i, j;
+    Quadruplet * temp;
+    ALLOUER(temp, nbOfQuad);
+
+    for(i = 0; i < nbOfQuad; i++) {
+        temp[i].x = quad[i].x * quad[i].h;
+        temp[i].y = quad[i].y * quad[i].h;
+        temp[i].z = quad[i].z * quad[i].h;
+        temp[i].h = quad[i].h;
+    }
+
+    for(i = 1; i < nbOfQuad; i++) {
+        for(j = 0; j < nbOfQuad - i; j++) {
+
+        }
+    }
 }
