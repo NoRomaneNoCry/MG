@@ -6,9 +6,9 @@
 
 struct bezier {
 
-	Table_triplet curvePoints;
+	Table_quadruplet curvePoints;
 	Table_quadruplet controlPoints;
-	Table_triplet reconfiguredCurvePoints;
+	Table_quadruplet reconfiguredCurvePoints;
 	Table_quadruplet reconfiguredControlPoints;
 	int curvePtNumber;
 	int reconfiguredCurvePtNumber;
@@ -127,7 +127,7 @@ CLASSE(CourbeBezier, struct bezier,
 	CHAMP_VIRTUEL(L_affiche_gl(drawBezier))
 	CHANGEMENT(changement)
 
-	MENU("Exemples_MG/Bezier")
+	MENU("Exemples_MG/Courbe de Bezier")
 	EVENEMENT("Ctrl+BE");
 
 	)

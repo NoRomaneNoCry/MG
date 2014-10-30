@@ -1,12 +1,9 @@
 #include "bezier.h"
 
-#include "o_objet.h"
-#include "t_geometrie.h"
-
-Triplet computePoint(Quadruplet* quad,int nbOfQuad, double u) {
+Quadruplet computePoint(Quadruplet* quad,int nbOfQuad, double u) {
     
     int i, j;
-    Triplet coords;
+    Quadruplet coords;
     Quadruplet** mat;
 
     ALLOUER(mat, nbOfQuad);
@@ -32,6 +29,7 @@ Triplet computePoint(Quadruplet* quad,int nbOfQuad, double u) {
     coords.x = mat[nbOfQuad-1][0].x / mat[nbOfQuad-1][0].h;
     coords.y = mat[nbOfQuad-1][0].y / mat[nbOfQuad-1][0].h;
     coords.z = mat[nbOfQuad-1][0].z / mat[nbOfQuad-1][0].h;
+    coords.h = mat[nbOfQuad-1][0].h;
 
     for(i=0;i<nbOfQuad;i++)
         free(mat[i]);
@@ -40,12 +38,12 @@ Triplet computePoint(Quadruplet* quad,int nbOfQuad, double u) {
     return coords;
 }
 
-Table_triplet computeAllPoints(Quadruplet* quad, int nbOfQuad, int pt_number) {
+Table_quadruplet computeAllPoints(Quadruplet* quad, int nbOfQuad, int pt_number) {
     
     int i;
     double step = 1.f / (pt_number - 1);
 
-    Table_triplet tab;
+    Table_quadruplet tab;
     tab.nb = pt_number;
     ALLOUER(tab.table, pt_number);
 
