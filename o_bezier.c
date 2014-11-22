@@ -109,7 +109,7 @@ CLASSE(CourbeBezier, struct bezier,
 			Edite Sauve DEFAUT("1") )
 	CHAMP(controlPoints, LABEL("Points de contrôle courbe") L_table_point P_table_quadruplet
 			Edite Extrait Obligatoire Sauve)
-	CHAMP(curvePoints, L_table_point P_table_triplet
+	CHAMP(curvePoints, L_table_point P_table_quadruplet
 			Sauve)
 	CHAMP(uMin, LABEL("Borne min reparamétrage") L_flottant
 			Edite Sauve DEFAUT("0") )
@@ -121,7 +121,7 @@ CLASSE(CourbeBezier, struct bezier,
 			Edite Sauve DEFAUT("1") )
 		CHAMP(reconfiguredControlPoints, LABEL("Points de contrôle courbe reparamétrée") L_table_point P_table_quadruplet
 			Affiche Sauve)
-	CHAMP(reconfiguredCurvePoints, L_table_point P_table_triplet
+	CHAMP(reconfiguredCurvePoints, L_table_point P_table_quadruplet
 			Sauve)
 
 	CHAMP_VIRTUEL(L_affiche_gl(drawBezier))
