@@ -42,7 +42,7 @@ Table_quadruplet computeAllPoints(Quadruplet* quad, int nbOfQuad, int pt_number)
     
     int i;
     double step = 1.f / (pt_number - 1);
-
+   
     Table_quadruplet tab;
     tab.nb = pt_number;
     ALLOUER(tab.table, pt_number);
